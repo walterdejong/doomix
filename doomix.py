@@ -7,32 +7,13 @@
 
 import sys
 import os
-import inspect
+import shlex
 
 from PyQt5.QtCore import pyqtSignal, pyqtSlot, Qt, QUrl, QDirIterator
 from PyQt5.QtWidgets import (QApplication, QDialog, QWidget, QVBoxLayout, QHBoxLayout, QGridLayout,
                              QLabel, QLineEdit, QPushButton, QToolButton, QFileDialog, QMessageBox)
 from PyQt5.QtGui import QPixmap, QFont, QIcon
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaPlaylist, QMediaContent
-
-
-DEBUG = False
-DEBUG_COLOR = True
-
-
-def debug(msg: str) -> None:
-    '''print debug message (if in debug mode)'''
-
-    if not DEBUG:
-        return
-
-    funcname = inspect.stack()[1][3]
-
-    if DEBUG_COLOR:
-        print('\x1b[32m% {}():\x1b[0m {}'.format(funcname, msg))
-    else:
-        print('% {}(): {}'.format(funcname, msg))
-
 
 
 class MainWindow(QDialog):
@@ -134,6 +115,7 @@ class MainWindow(QDialog):
         layout.addSpacing(int(MainWindow.WIDTH * 0.5))
 
         self.launch_button = QPushButton('Launch')
+        self.launch_button.clicked.connect(self.onclick_launch)
         layout.addWidget(self.launch_button)
 
         widget.setLayout(layout)
@@ -170,17 +152,39 @@ class MainWindow(QDialog):
         # add selected add-ons to the edit line
         filenames.insert(0, '')
         line = self.addons_line.text()
-        if line:
-            line += ' '
-        line += '-file '.join(filenames)
+        line += ' -file '.join(filenames)
         self.addons_line.setText(line)
+
+    def onclick_launch(self):
+        '''launch the executable'''
+
+        prog = self.exe_line.text()
+        if not prog:
+            self.alertbox('First select the DOOM executable!'.format(filename))
+            return
+
+        if not (os.path.isfile(prog) and os.access(prog, os.X_OK)):
+            self.alertbox('{}: not executable'.format(prog))
+            return
+
+        addons = self.addons_line.text().strip()
+        if addons:
+            prog += ' ' + addons
+
+        args = self.args_line.text().strip()
+        if args:
+            prog += ' ' + args
+
+        cmd_arr = shlex.split(prog)
+        # launch executable!
+        try:
+            os.execv(cmd_arr[0], cmd_arr)
+        except OSError as err:
+            self.alertbox('{}: {}'.format(cmd_arr[0], err.strerror))
 
 
 
 if __name__ == '__main__':
-    if len(sys.argv) > 1 and sys.argv[1] == '--debug':
-        DEBUG = True
-
     app_ = QApplication(sys.argv)
     main_window_ = MainWindow()
     sys.exit(app_.exec_())
