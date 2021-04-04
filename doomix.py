@@ -11,7 +11,7 @@ import inspect
 
 from PyQt5.QtCore import pyqtSignal, pyqtSlot, Qt, QUrl, QDirIterator
 from PyQt5.QtWidgets import (QApplication, QDialog, QWidget, QVBoxLayout, QHBoxLayout, QGridLayout,
-                             QLabel, QLineEdit, QPushButton, QToolButton, QFileDialog, QSizePolicy)
+                             QLabel, QLineEdit, QPushButton, QToolButton, QFileDialog, QMessageBox)
 from PyQt5.QtGui import QPixmap, QFont, QIcon
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaPlaylist, QMediaContent
 
@@ -38,7 +38,7 @@ def debug(msg: str) -> None:
 class MainWindow(QDialog):
     '''main window'''
 
-    APP_TITLE = 'Doomix'
+    APP_TITLE = 'DOOMix'
     APP_ICON = '/usr/share/doomix/doomix.png'
     IMAGE = 'doom_logo.png'
     WIDTH = 600
@@ -82,6 +82,7 @@ class MainWindow(QDialog):
         layout.addWidget(self.exe_line, 1, 1)
 
         self.exe_browse_button = QPushButton('...', self)
+        self.exe_browse_button.clicked.connect(self.onclick_exe_browse_button)
         layout.addWidget(self.exe_browse_button, 1, 2)
 
         # add-ons edit line + browse button
@@ -93,6 +94,7 @@ class MainWindow(QDialog):
         layout.addWidget(self.addons_line, 2, 1)
 
         self.addons_browse_button = QPushButton('...', self)
+        self.addons_browse_button.clicked.connect(self.onclick_addons_browse_button)
         layout.addWidget(self.addons_browse_button, 2, 2)
 
         # extra arguments line (without browse button)
@@ -136,6 +138,42 @@ class MainWindow(QDialog):
 
         widget.setLayout(layout)
         return widget
+
+    def onclick_exe_browse_button(self):
+        '''browse for executable'''
+
+        filename, _ = QFileDialog.getOpenFileName(self, 'Select DOOM executable', '/')
+        if not filename:
+            # cancel
+            return
+
+        if not (os.path.isfile(filename) and os.access(filename, os.X_OK)):
+            self.alertbox('{}: not executable'.format(filename))
+            return
+
+        # put selected filename into the edit line
+        self.exe_line.setText(filename)
+
+    def alertbox(self, msg):
+        '''display an alert'''
+
+        QMessageBox.warning(self, 'DOOMix', msg, QMessageBox.Ok)
+
+    def onclick_addons_browse_button(self):
+        '''browse for addons'''
+
+        filenames, _ = QFileDialog.getOpenFileNames(self, 'Select add-ons', '~', 'WAD files (*.WAD *.wad *.PK3 *.pk3)')
+        if not filenames:
+            # cancel
+            return
+
+        # add selected add-ons to the edit line
+        filenames.insert(0, '')
+        line = self.addons_line.text()
+        if line:
+            line += ' '
+        line += '-file '.join(filenames)
+        self.addons_line.setText(line)
 
 
 
