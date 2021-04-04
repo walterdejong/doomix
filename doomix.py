@@ -22,6 +22,7 @@ class MainWindow(QDialog):
     APP_TITLE = 'DOOMix'
     APP_ICON = '/usr/share/doomix/doomix.png'
     IMAGE = 'doom_logo.png'
+    ABOUT_ICON = 'skull_icon.png'
     WIDTH = 600
 
     def __init__(self, parent=None):
@@ -110,6 +111,7 @@ class MainWindow(QDialog):
         layout = QHBoxLayout()
 
         self.about_button = QPushButton('About')
+        self.about_button.clicked.connect(self.onclick_about)
         layout.addWidget(self.about_button)
 
         layout.addSpacing(int(MainWindow.WIDTH * 0.5))
@@ -154,6 +156,19 @@ class MainWindow(QDialog):
         line = self.addons_line.text()
         line += ' -file '.join(filenames)
         self.addons_line.setText(line)
+
+    def onclick_about(self):
+        '''show about box'''
+
+        about = QMessageBox(QMessageBox.Information, 'About DOOMix',
+                            'DOOMix is a launcher for the DOOM game, '
+                            'made for use with (but not limited to) gzdoom.\n\n'
+                            'This is FREE software provided AS IS WITHOUT WARRANTY '
+                            'of any kind whatsoever.\n\n'
+                            'Copyright 2021 by Walter de Jong <walter@heiho.net>', QMessageBox.Ok)
+        icon = QPixmap(MainWindow.ABOUT_ICON)
+        about.setIconPixmap(icon)
+        about.exec()
 
     def onclick_launch(self):
         '''launch the executable'''
