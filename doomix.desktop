@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Encoding=UTF-8
+Name=DOOMix
+Comment=DOOM launcher
+Exec=/usr/games/doomix
+Icon=/usr/share/doomix/doomix_icon.png
+Terminal=false
+Categories=Game;Shooter;

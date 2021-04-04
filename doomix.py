@@ -2,6 +2,26 @@
 #
 #   doomix.py   WJ121
 #
+#   Copyright (c) 2021 Walter de Jong <walter@heiho.net>
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy of
+# this software and associated documentation files (the "Software"), to deal in
+# the Software without restriction, including without limitation the rights to
+# use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+# of the Software, and to permit persons to whom the Software is furnished to do
+# so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
 
 '''DOOM launcher'''
 
@@ -9,20 +29,18 @@ import sys
 import os
 import shlex
 
-from PyQt5.QtCore import pyqtSignal, pyqtSlot, Qt, QUrl, QDirIterator
-from PyQt5.QtWidgets import (QApplication, QDialog, QWidget, QVBoxLayout, QHBoxLayout, QGridLayout,
-                             QLabel, QLineEdit, QPushButton, QToolButton, QFileDialog, QMessageBox)
-from PyQt5.QtGui import QPixmap, QFont, QIcon
-from PyQt5.QtMultimedia import QMediaPlayer, QMediaPlaylist, QMediaContent
+from PyQt5.QtWidgets import (QApplication, QDialog, QWidget, QHBoxLayout, QGridLayout,
+                             QLabel, QLineEdit, QPushButton, QFileDialog, QMessageBox)
+from PyQt5.QtGui import QPixmap, QIcon
 
 
 class MainWindow(QDialog):
     '''main window'''
 
     APP_TITLE = 'DOOMix'
-    APP_ICON = '/usr/share/doomix/doomix.png'
-    IMAGE = 'doomix_logo.png'
-    ABOUT_ICON = 'skull_icon.png'
+    APP_ICON = '/usr/share/doomix/doomix_icon.png'
+    IMAGE = '/usr/share/doomix/doomix_logo.png'
+    ABOUT_ICON = '/usr/share/doomix/skull_icon.png'
     WIDTH = 600
 
     def __init__(self, parent=None):
@@ -162,10 +180,27 @@ class MainWindow(QDialog):
 
         about = QMessageBox(QMessageBox.Information, 'About DOOMix',
                             'DOOMix is a launcher for the DOOM game, '
-                            'made for use with (but not limited to) gzdoom.\n\n'
-                            'This is FREE software provided AS IS WITHOUT WARRANTY '
-                            'of any kind whatsoever.\n\n'
-                            'Copyright 2021 by Walter de Jong <walter@heiho.net>', QMessageBox.Ok)
+                            'made for use with (but not limited to) gzdoom.\n'
+                            '\n'
+                            'Copyright (c) 2021 Walter de Jong <walter@heiho.net>\n'
+                            '\n'
+                            'Permission is hereby granted, free of charge, to any person obtaining a copy of '
+                            'this software and associated documentation files (the "Software"), to deal in '
+                            'the Software without restriction, including without limitation the rights to '
+                            'use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies '
+                            'of the Software, and to permit persons to whom the Software is furnished to do '
+                            'so, subject to the following conditions:\n'
+                            '\n'
+                            'The above copyright notice and this permission notice shall be included in all '
+                            'copies or substantial portions of the Software.\n'
+                            '\n'
+                            'THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR '
+                            'IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, '
+                            'FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE '
+                            'AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER '
+                            'LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, '
+                            'OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE '
+                            'SOFTWARE.', QMessageBox.Ok)
         icon = QPixmap(MainWindow.ABOUT_ICON)
         about.setIconPixmap(icon)
         about.exec()
@@ -175,7 +210,7 @@ class MainWindow(QDialog):
 
         prog = self.exe_line.text()
         if not prog:
-            self.alertbox('First select the DOOM executable!'.format(filename))
+            self.alertbox('First select the DOOM executable!')
             return
 
         if not (os.path.isfile(prog) and os.access(prog, os.X_OK)):
