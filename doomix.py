@@ -21,7 +21,7 @@ class MainWindow(QDialog):
 
     APP_TITLE = 'DOOMix'
     APP_ICON = '/usr/share/doomix/doomix.png'
-    IMAGE = 'doom_logo.png'
+    IMAGE = 'doomix_logo.png'
     ABOUT_ICON = 'skull_icon.png'
     WIDTH = 600
 
