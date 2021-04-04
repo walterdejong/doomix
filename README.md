@@ -14,6 +14,9 @@ macOS, and maybe even Windows, but these have not been tested).
 If you have GNOME, it is added to the GNOME menu.
 
 
+![screenshot](/devdata/screenshot.png?raw=true "screenshot")
+
+
 Requirements
 ------------
 
